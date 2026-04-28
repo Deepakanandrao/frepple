@@ -15,4 +15,5 @@ highlights the changes, their motivation and impact.
    using-the-connector-in-odoo
    using-the-connector-in-frepple
    installation-and-configuration
+   using-the-connectors-with-an-anonymous-server
    data-mapping
