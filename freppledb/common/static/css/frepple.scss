@@ -985,4 +985,7 @@ input[type="date"] {
     white-space: nowrap;
 }
 
-
+// Default text color for svg
+svg text {
+    fill: var(--bs-body-color);
+}

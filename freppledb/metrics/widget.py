@@ -206,8 +206,8 @@ class DeliveryPerformanceWidget(Widget):
                 .append('path')
                 .attr('d', arc)
                 .attr('fill', d => d.data.color)
-                .attr('stroke', 'white')
-                .style('stroke-width', '2px')
+                .attr('stroke', 'var(--bs-body-color)')
+                .style('stroke-width', '1px')
                 .on("mouseover", function(d) {
 
                     graph.showTooltip(

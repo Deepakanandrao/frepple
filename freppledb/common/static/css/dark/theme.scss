@@ -1,12 +1,12 @@
-$light: #2b2b2b;
+$light: #272B30;
 $dark: #000000;
 
 $primary: #4a90e2;
-$secondary: #1f1f1f;
-$success: #4caf50;
-$info: #29b6f6;
-$warning: #ffd54f;
-$danger: #ff6b6b;
+$secondary: #515960;
+$success: #6AC76A;
+$info: #64C3E0;
+$warning: #F99918;
+$danger: #EF6864;
 
 $white: #fff !default;
 $gray-100: #f8f9fa !default;
@@ -21,7 +21,7 @@ $gray-900: #212529 !default;
 $black: #000 !default;
 
 // Body background
-$body-bg: #000;
+$body-bg: #272B30;
 
 // Table color
 $table-color: #e9ecef;
@@ -29,10 +29,10 @@ $table-color-state: #e9ecef;
 
 // Override background colors
 $table-bg: inherit;
-$card-bg: #111;
-$dropdown-bg: #111;
-$modal-content-bg: #111;
-$list-group-bg: #111;
+$card-bg: #3A3F44;
+$dropdown-bg: #515960;
+$modal-content-bg: #3A3F44;
+$list-group-bg: #3A3F44;
 
 // Logo height
 $navbar-brand-height: 3rem;
@@ -66,6 +66,9 @@ $theme-colors: (
     "gray": $gray-600,
 );
 
+// Specific for the dark theme, we need better borders
+$card-border-color: #555555;
+
 // You probably don't need to update the variables below this line.
 // These updates are normally generic for all frepple themes.
 $accordion-bg: $card-bg;
@@ -81,16 +84,16 @@ $breadcrumb-item-padding-x: 0.2rem;
 $btn-active-bg-shade-amount: 70%;
 $card-title-spacer-y: 0;
 $dropdown-color: $body-color;
-$dropdown-link-active-bg: $gray-800;
+$dropdown-link-active-bg: $gray-200;
 $dropdown-link-active-color: $body-color;
-$dropdown-link-hover-bg: $gray-800;
+$dropdown-link-hover-bg: $gray-200;
 $dropdown-link-hover-color: $body-color;
 $h1-font-size: $font-size-base * 1.5;
 $h2-font-size: $font-size-base * 1.25;
 $h3-font-size: $font-size-base * 1.25;
 $h4-font-size: $font-size-base * 1.25;
 $h5-font-size: $font-size-base * 1.25;
-$input-bg: #1a1a1a;
+$input-bg: #515960;
 $input-color: $body-color;
 $input-border-color: #333;
 $input-btn-focus-width: 2px;
@@ -100,6 +103,5 @@ $link-hover-color: lighten($body-color, 10%);
 $link-hover-decoration: none;
 $navbar-light-color: $body-color;
 $nav-link-color: $body-color;
-$nav-tabs-border-color: $gray-700;
 $nav-tabs-border-radius: 0;
 $spacer: 1rem;
