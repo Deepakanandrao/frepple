@@ -12,6 +12,8 @@
 // 2. Include frePPLe theme-specific definitions
 @import "theme";
 
+$btn-close-color: $body-color;
+
 // 3. Include remainder of required parts
 @import "../../../../node_modules/bootstrap/scss/variables";
 @import "../../../../node_modules/bootstrap/scss/maps";
@@ -260,6 +262,8 @@ div.tt-menu.tt-open {
     @extend .dropdown-menu;
     max-height: 500px;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: $dark $dropdown-bg;
 }
 
 div.tt-dataset.tt-dataset-search {

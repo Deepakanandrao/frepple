@@ -66,11 +66,18 @@ $theme-colors: (
     "gray": $gray-600,
 );
 
-// Specific for the dark theme, we need better borders
+// Specific for the dark theme
 $card-border-color: #555555;
+$tooltip-color: $body-color;
+$input-color: $body-color;
+$input-border-color: #333;
+$nav-tabs-border-color: $light;
+$navbar-light-hover-color: $body-color;
+$dropdown-divider-bg: $gray-500;
+
 
 // You probably don't need to update the variables below this line.
-// These updates are normally generic for all frepple themes.
+// These updates are normally generic for all frepple themes (with the exception of the dark theme)
 $accordion-bg: $card-bg;
 $accordion-btn-focus-border-color: $primary;
 $accordion-button-active-bg: $secondary;
@@ -84,9 +91,9 @@ $breadcrumb-item-padding-x: 0.2rem;
 $btn-active-bg-shade-amount: 70%;
 $card-title-spacer-y: 0;
 $dropdown-color: $body-color;
-$dropdown-link-active-bg: $gray-200;
+$dropdown-link-active-bg: #272B30;
 $dropdown-link-active-color: $body-color;
-$dropdown-link-hover-bg: $gray-200;
+$dropdown-link-hover-bg: #272B30;
 $dropdown-link-hover-color: $body-color;
 $h1-font-size: $font-size-base * 1.5;
 $h2-font-size: $font-size-base * 1.25;
@@ -94,12 +101,10 @@ $h3-font-size: $font-size-base * 1.25;
 $h4-font-size: $font-size-base * 1.25;
 $h5-font-size: $font-size-base * 1.25;
 $input-bg: #515960;
-$input-color: $body-color;
-$input-border-color: #333;
 $input-btn-focus-width: 2px;
 $link-color: $body-color;
 $link-decoration: none;
-$link-hover-color: lighten($body-color, 10%);
+$link-hover-color: $body-color;
 $link-hover-decoration: none;
 $navbar-light-color: $body-color;
 $nav-link-color: $body-color;
