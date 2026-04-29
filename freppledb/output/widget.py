@@ -202,9 +202,7 @@ class ManufacturingOrderWidget(Widget):
     }
     draw();
 
-    """ % force_str(
-        _("units")
-    )
+    """ % force_str(_("units"))
 
     @classmethod
     def render(cls, request):
@@ -531,9 +529,7 @@ class DistributionOrderWidget(Widget):
     }
     draw();
 
-    """ % force_str(
-        _("units")
-    )
+    """ % force_str(_("units"))
 
     @classmethod
     def render(cls, request):
@@ -859,9 +855,7 @@ class PurchaseOrderWidget(Widget):
                 });
     }
     draw();
-    """ % force_str(
-        _("units")
-    )
+    """ % force_str(_("units"))
 
     @classmethod
     def render(cls, request):
@@ -1447,9 +1441,7 @@ class AlertsWidget(Widget):
             where entity in (%s)
             group by name
             order by name
-            """ % (
-            ", ".join(["%s"] * len(entities))
-        )
+            """ % (", ".join(["%s"] * len(entities)))
         cursor.execute(query, entities)
         alt = False
         for res in cursor.fetchall():
@@ -1547,7 +1539,7 @@ class ResourceLoadWidget(Widget):
       .style("fill", function(d) {
         if (d[2] > resload_high) return "#DC3912";
         if (d[2] > resload_medium) return "#FF9900";
-        return "#109618";
+        return "#828915";
         });
 
     bar.append("text")
