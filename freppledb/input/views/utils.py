@@ -1418,47 +1418,6 @@ class PathReport(GridReport):
         previousOperation,
         bom_quantity,
     ):
-        # check if routing dependencies has been done
-        if not reportclass.routing_dependencies_done:
-            reportclass.routing_dependencies_done = True
-            reportclass.routing_operation_position = {}
-            cursor.execute("""
-            with q as (
-                with recursive cte as
-                (
-                select 1 as y, operation.owner_id, operation.name, null::text as blockedby_id
-                from operation
-                where operation.owner_id is not null
-                and not exists (select 1 from operation_dependency
-                                inner join operation bb on bb.name = operation_dependency.blockedby_id
-                                and bb.owner_id = operation.owner_id
-                                where operation_dependency.operation_id = operation.name)
-                and exists (select 1 from operation_dependency
-                           inner join operation op1 on op1.name = operation_dependency.operation_id
-                           inner join operation op2 on op2.name = operation_dependency.blockedby_id
-                           where op1.owner_id = operation.owner_id
-                           and op2.owner_id = operation.owner_id)
-                union all
-                select cte.y+1, operation.owner_id, operation.name, operation_dependency.blockedby_id
-                from operation_dependency
-                inner join cte on cte.name = operation_dependency.blockedby_id
-                inner join operation on operation.name = operation_dependency.operation_id and operation.owner_id = cte.owner_id
-                )
-                select distinct cte.owner_id, y, name from cte
-                )
-            select owner_id, name, row_number() over(partition by owner_id, y order by name) as x, y from q
-            order by 1,2,3
-            """)
-            for rec in cursor:
-                reportclass.routing_operation_position[rec[1]] = (rec[2], rec[3])
-                # for the routing, x,y refers to the number of rows and columns
-                if rec[0] not in reportclass.routing_operation_position:
-                    reportclass.routing_operation_position[rec[0]] = (rec[2], rec[3])
-                else:
-                    reportclass.routing_operation_position[rec[0]] = (
-                        max(rec[2], reportclass.routing_operation_position[rec[0]][0]),
-                        max(rec[3], reportclass.routing_operation_position[rec[0]][1]),
-                    )
 
         # First can we go further ?
         if len(reportclass.node_count) > 800:
@@ -1767,9 +1726,6 @@ class PathReport(GridReport):
 
         # dictionary to retrieve the operation id from its name
         reportclass.operation_dict = {}
-
-        # A flag to figure out if the routing dependencies have been scanned
-        reportclass.routing_dependencies_done = False
 
         # counter used to give a unique id to the operation
         reportclass.operation_id = 0
