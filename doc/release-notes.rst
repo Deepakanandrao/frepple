@@ -18,6 +18,9 @@ You can already check out a `preview <https://demo-preview.frepple.com>`_.
     And vice versa, hovering with the mouse over an operation in the table will now highlight
     the corresponding operation in the graph.
 
+- | Supply path: Complex supply paths with many items and levels will now open much faster.
+  |  Switch paramater pathreport_optimization to true to activate this feature.
+
 .. rubric:: System administration
 
 - | The docker image now allows overriding the entrypoint and skipping the database initialization.
