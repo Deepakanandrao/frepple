@@ -349,24 +349,14 @@ function drawGraphs(jsondata)
       });
 
     // Create D3 line
-    if (fields.has('startoh'))
+    if (fields.has('total_backlog'))
     {
       var line = d3.svg.line()
         .x(function(d) { return x(timebuckets[d['bucket']]['name']) + x_width / 2; })
-        .y(function(d) { return y(d['startinv']); });
+        .y(function(d) { return y(d['total_backlog']); });
       svg.append("svg:path")
         .attr('class', 'graphline')
-        .attr("stroke","#8BBA00")
-        .attr("d", line(data));
-    }
-    else if (fields.has('endoh'))
-    {
-      var line = d3.svg.line()
-        .x(function(d) { return x(timebuckets[d['bucket']]['name']) + x_width / 2; })
-        .y(function(d) { return y(d['endinv']); });
-      svg.append("svg:path")
-        .attr('class', 'graphline')
-        .attr("stroke","#8BBA00")
+        .attr("stroke","#000000")
         .attr("d", line(data));
     }
     if (fields.has('safetystock'))
@@ -379,14 +369,24 @@ function drawGraphs(jsondata)
         .attr("stroke","#FF0000")
         .attr("d", line(data));
     }
-    if (fields.has('total_backlog'))
+    if (fields.has('startoh'))  // Drawn last to be on top
     {
       var line = d3.svg.line()
         .x(function(d) { return x(timebuckets[d['bucket']]['name']) + x_width / 2; })
-        .y(function(d) { return y(d['total_backlog']); });
+        .y(function(d) { return y(d['startinv']); });
       svg.append("svg:path")
         .attr('class', 'graphline')
-        .attr("stroke","#000000")
+        .attr("stroke","#8BBA00")
+        .attr("d", line(data));
+    }
+    else if (fields.has('endoh')) // Drawn last to be on top
+    {
+      var line = d3.svg.line()
+        .x(function(d) { return x(timebuckets[d['bucket']]['name']) + x_width / 2; })
+        .y(function(d) { return y(d['endinv']); });
+      svg.append("svg:path")
+        .attr('class', 'graphline')
+        .attr("stroke","#8BBA00")
         .attr("d", line(data));
     }
 
