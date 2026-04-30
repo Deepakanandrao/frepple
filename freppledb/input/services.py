@@ -448,7 +448,16 @@ class SupplyPathSvc(AsyncHttpConsumer):
         self, op, depth, real_depth, quantity, results, upstream, parent_id
     ):
         # Avoid duplicates
-        if any(o["operation"] == op.name for o in results):
+        operation_name = (
+            f"Purchase {op.buffer.item.name} @ {op.buffer.location.name} from {op.itemsupplier.supplier.name}"
+            if isinstance(op, frepple.operation_itemsupplier)
+            else (
+                f"Ship {op.origin.item.name} from {op.origin.location.name} to {op.destination.location.name}"
+                if isinstance(op, frepple.operation_itemdistribution)
+                else op.name
+            )
+        )
+        if any(o["operation"] == operation_name for o in results):
             return
 
         # Add the current operation to the result list
@@ -468,12 +477,60 @@ class SupplyPathSvc(AsyncHttpConsumer):
             v = {
                 "depth": depth,
                 "id": id,
-                "operation": op.name,
+                "operation": operation_name,
                 "priority": suboperation_priority or op.priority,
                 "type": self.operation_dict[op.__class__.__name__],
-                "item": op.item.name if op.item else None,
-                "description": op.item.description if op.item else None,
-                "uom": op.item.uom if op.item else None,
+                "item": (
+                    op.buffer.item.name
+                    if isinstance(op, frepple.operation_itemsupplier)
+                    else (
+                        op.origin.item.name
+                        if isinstance(op, frepple.operation_itemdistribution)
+                        else (
+                            op.item.name
+                            if op.item
+                            else (
+                                op.owner.item.name
+                                if op.owner and op.owner.item
+                                else None
+                            )
+                        )
+                    )
+                ),
+                "description": (
+                    op.buffer.item.description
+                    if isinstance(op, frepple.operation_itemsupplier)
+                    else (
+                        op.origin.item.description
+                        if isinstance(op, frepple.operation_itemdistribution)
+                        else (
+                            op.item.description
+                            if op.item
+                            else (
+                                op.owner.item.description
+                                if op.owner and op.owner.item
+                                else None
+                            )
+                        )
+                    )
+                ),
+                "uom": (
+                    op.buffer.item.uom
+                    if isinstance(op, frepple.operation_itemsupplier)
+                    else (
+                        op.origin.item.uom
+                        if isinstance(op, frepple.operation_itemdistribution)
+                        else (
+                            op.item.uom
+                            if op.item
+                            else (
+                                op.owner.item.uom
+                                if op.owner and op.owner.item
+                                else None
+                            )
+                        )
+                    )
+                ),
                 "location": op.location.name if op.location else None,
                 "resources": sorted((l.resource.name, l.quantity) for l in op.loads)
                 or None,
