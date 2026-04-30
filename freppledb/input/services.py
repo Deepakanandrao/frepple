@@ -444,6 +444,18 @@ class SupplyPathSvc(AsyncHttpConsumer):
         "operation_alternate": "alternate",
     }
 
+    def format_seconds(self, seconds):
+        if seconds is None:
+            return None
+        elif seconds == 0:
+            return "00:00:00"
+        days = seconds // 86400
+        hours = (seconds % 86400) // 3600
+        minutes = (seconds % 3600) // 60
+        secs = seconds % 60
+
+        return f"{days} {hours:02}:{minutes:02}:{secs:02}"
+
     def recurseOperations(
         self, op, depth, real_depth, quantity, results, upstream, parent_id
     ):
@@ -540,8 +552,8 @@ class SupplyPathSvc(AsyncHttpConsumer):
                 "suboperation": (
                     suboperation_index if op.owner and not op.owner.hidden else 0
                 ),
-                "duration": getattr(op, "duration", None),
-                "duration_per": getattr(op, "duration_per", None),
+                "duration": self.format_seconds(getattr(op, "duration", None)),
+                "duration_per": self.format_seconds(getattr(op, "duration_per", None)),
                 "quantity": quantity,
                 "buffers": sorted((fl.buffer.name, fl.quantity) for fl in op.flows)
                 or None,
