@@ -26,6 +26,11 @@ You can already check out a `preview <https://demo-preview.frepple.com>`_.
 - | The docker image now allows overriding the entrypoint and skipping the database initialization.
   | Only very specific usage of the frepple docker image need this capability.
 
+.. rubric:: Odoo integration
+
+- | 18, 19: Fix for in-transit material in multi-step routes.
+  | Between steps the material is seen as in-transit in  Odoo, but it wasn't seen in frepple.
+
 .. rubric:: Upgrade compatibility heads-up
 
 | No breaking changes in this release.
