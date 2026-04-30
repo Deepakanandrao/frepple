@@ -129,6 +129,9 @@ SolverCreate::SolverData::SolverData(SolverCreate* s, int c, deque<Demand*>* d)
       logConstraints(true),
       state(statestack),
       prevstate(statestack - 1) {
+  shortagesonly = sol->getShortagesOnly();
+  propagate = sol->getPropagate();
+  batchgrouping = sol->getBatchGrouping();
   operator_delete = new OperatorDelete();
   operator_forward = new OperatorForward(this, c, mgr);
   operator_delete->setLogLevel(s->getLogLevel());
@@ -327,8 +330,8 @@ void SolverCreate::SolverData::commit() {
       // Special case to use a single sweep for truely unconstrained plans
 
       // Step 1: Create a delivery operationplan for all demands
-      solver->setPropagate(false);
-      solver->setBatchGrouping(true);
+      setPropagate(false);
+      setBatchGrouping(true);
       if (solver->getCreateDeliveries()) createDeliveries();
 
       // Step 3: Solve buffer by buffer, ordered by level
@@ -339,28 +342,58 @@ void SolverCreate::SolverData::commit() {
       scanExcess(false);
     } else if (solver->getAlgorithm() == "heuristic_2") {
       // Create a delivery operationplan for all demands
-      solver->setPropagate(false);
-      if (solver->getCreateDeliveries()) createDeliveries();
+      if (solver->getCreateDeliveries()) {
+        constrainedPlanning = false;
+        setPropagate(false);
+        createDeliveries();
+      }
 
       // Backward sweep
+      if (solver->getLogLevel() > 0)
+        logger << "PLANNING STEP 1: backward sweep\n";
+      constrainedPlanning = false;
+      setPropagate(false);
       buffer_solve_shortages_only = false;
-      solver->setBatchGrouping(false);
+      setBatchGrouping((solver->getPlanType() == 1) ? false : true);
       backward_sweep();
 
-      // Step 4: Forward sweep
-      operator_forward->solve();
+      if (solver->getPlanType() == 1) {
+        // Step 4: Forward sweep
+        if (solver->getPlanType() == 1) {
+          if (solver->getLogLevel() > 0)
+            logger << "PLANNING STEP 2: forward sweep\n";
+          constrainedPlanning = true;
+          operator_forward->setPropagate(false);
+          operator_forward->solve();
+        }
 
-      // TODO delete proposed, except deliveries
+        // Delete proposed operationplans, except deliveries
+        // This gives us feasible date to start a second run
+        for (auto& oper : Operation::all())
+          if (cluster == -1 || oper.getCluster() == cluster)
+            oper.deleteOperationPlans(false, false);
 
-      // TODO backward sweep again
+        // Backward sweep again, with batch grouping enabled this time
+        // This coordinates the batches on their feasible date
+        if (solver->getLogLevel() > 0)
+          logger << "PLANNING STEP 3: second backward sweep\n";
+        buffer_solve_shortages_only = false;
+        setBatchGrouping(true);
+        constrainedPlanning = false;
+        backward_sweep();
 
-      // Forward sweep, from the feasible date
-      // buffer_solve_shortages_only = false;
-      // solver->setBatchGrouping(false);
-      // backward_sweep();
+        // Forward sweep, from the feasible date
+        if (solver->getLogLevel() > 0)
+          logger << "PLANNING STEP 4: second forward sweep\n";
+        constrainedPlanning = true;
+        operator_forward->setPropagate(false);
+        operator_forward->solve();
 
-      // Clean up excess inventory
-      scanExcess(false);
+        // Clean up excess inventory
+        if (solver->getLogLevel() > 0)
+          logger << "PLANNING STEP 5: clean up excess inventory\n";
+        scanExcess(false);
+      }
     } else {
       // Normal case: demand-per-demand loop
 

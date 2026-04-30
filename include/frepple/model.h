@@ -2083,7 +2083,8 @@ class OperationPlan final : public Object,
   /* Deletes all operationplans of a certain operation. A boolean flag
    * allows to specify whether locked operationplans are to be deleted too.
    */
-  static void deleteOperationPlans(Operation* o, bool deleteLocked = false);
+  static void deleteOperationPlans(Operation* o, bool deleteLocked = false,
+                                   bool deleteDeliveries = true);
 
   /* Update the status to CONFIRMED, or back to PROPOSED. */
   void setConfirmed(bool b);
@@ -3233,7 +3234,8 @@ class Operation : public HasName<Operation>,
   /* Deletes all operationplans of this operation. The boolean parameter
    * controls whether we delete also locked operationplans or not.
    */
-  void deleteOperationPlans(bool deleteLockedOpplans = false);
+  void deleteOperationPlans(bool deleteLockedOpplans = false,
+                            bool deleteDeliveries = true);
 
   /* Sets the minimum size of operationplans.
    * The default value is 1.0

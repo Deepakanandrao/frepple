@@ -949,8 +949,9 @@ Flow* Operation::findFlow(const Buffer* b, Date d) const {
   return nullptr;
 }
 
-void Operation::deleteOperationPlans(bool deleteLockedOpplans) {
-  OperationPlan::deleteOperationPlans(this, deleteLockedOpplans);
+void Operation::deleteOperationPlans(bool deleteLockedOpplans,
+                                     bool deleteDeliveries) {
+  OperationPlan::deleteOperationPlans(this, deleteLockedOpplans, deleteDeliveries );
 }
 
 OperationPlanState OperationFixedTime::setOperationPlanParameters(

@@ -618,7 +618,7 @@ void SolverCreate::solve(const Buffer* b, void* v) {
     // already use the new value before the intended date.
     if (cur->getEventType() == 3 &&
         (!data->buffer_solve_shortages_only || data->safety_stock_planning) &&
-        !getShortagesOnly())
+        !data->getShortagesOnly())
       current_minimum = cur->getMin();
     if (cur->getEventType() == 4) current_maximum = cur->getMax();
 
@@ -770,7 +770,7 @@ void SolverCreate::solve(const Buffer* b, void* v) {
 
 void SolverCreate::solveSafetyStock(const Buffer* b, void* v) {
   auto* data = static_cast<SolverData*>(v);
-  auto shortagesonly = getShortagesOnly();
+  auto shortagesonly = data->getShortagesOnly();
 
   // Message
   if (getLogLevel() > 1) {

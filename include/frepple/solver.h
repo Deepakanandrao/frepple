@@ -476,14 +476,6 @@ class SolverCreate : public Solver {
     minimumdelay = l;
   }
 
-  bool getShortagesOnly() const { return shortagesonly; }
-
-  bool setShortagesOnly(bool b) {
-    auto old = shortagesonly;
-    shortagesonly = b;
-    return old;
-  }
-
   const string& getAlgorithm() const { return algorithm; }
 
   void setAlgorithm(const string& s) {
@@ -601,14 +593,6 @@ class SolverCreate : public Solver {
 
   void setRotateResources(bool b) { rotateResources = b; }
 
-  bool getPropagate() const { return propagate; }
-
-  void setPropagate(bool b) { propagate = b; }
-
-  bool getBatchGrouping() const { return batchgrouping; }
-
-  void setBatchGrouping(bool b) { batchgrouping = b; }
-
   Duration getAdministrativeLeadTime() const { return administrativeleadtime; }
 
   void setAdministrativeLeadTime(Duration l) {
@@ -671,6 +655,22 @@ class SolverCreate : public Solver {
   }
 
  private:
+  bool getShortagesOnly() const { return shortagesonly; }
+
+  bool setShortagesOnly(bool b) {
+    auto old = shortagesonly;
+    shortagesonly = b;
+    return old;
+  }
+
+  bool getPropagate() const { return propagate; }
+
+  void setPropagate(bool b) { propagate = b; }
+
+  bool getBatchGrouping() const { return batchgrouping; }
+
+  void setBatchGrouping(bool b) { batchgrouping = b; }
+
   typedef vector<deque<Demand*>> classified_demand;
   typedef classified_demand::iterator cluster_iterator;
   classified_demand demands_per_cluster;
@@ -944,6 +944,22 @@ class SolverCreate : public Solver {
    private:
     static const int MAXSTATES = 256;
 
+    bool getPropagate() const { return propagate; }
+
+    void setPropagate(bool b) { propagate = b; }
+
+    bool getBatchGrouping() const { return batchgrouping; }
+
+    void setBatchGrouping(bool b) { batchgrouping = b; }
+
+    bool getShortagesOnly() const { return shortagesonly; }
+
+    bool setShortagesOnly(bool b) {
+      auto old = shortagesonly;
+      shortagesonly = b;
+      return old;
+    }
+
     /* Auxilary method to replenish safety stock in all buffers of a
      * cluster. This method is only intended to be called from the
      * commit() method.
@@ -996,6 +1012,19 @@ class SolverCreate : public Solver {
 
     /* Flags when we are in a plan coordination loop. */
     bool coordination_run = false;
+
+    /* Used to force the buffer safety stock solver method to resolve
+     * only the material shortages. */
+    bool shortagesonly = false;
+
+    /* When set to false we solve only for the entity being called. This is
+     * used when you want to control manual the sequence of the planning
+     * loop.
+     */
+    bool propagate = true;
+
+    /* When set to true, the solver will group operation plans together. */
+    bool batchgrouping = false;
 
     /* This flag is set to true when we hit a situation where repeating an ask
        to the buffer is acceptable:

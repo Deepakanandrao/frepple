@@ -1590,8 +1590,8 @@ void OperationPlan::update() {
   setChanged();
 }
 
-void OperationPlan::deleteOperationPlans(Operation* o,
-                                         bool deleteLockedOpplans) {
+void OperationPlan::deleteOperationPlans(Operation* o, bool deleteLockedOpplans,
+                                         bool deleteDeliveries) {
   if (!o) return;
   for (auto opplan = o->first_opplan; opplan;) {
     OperationPlan* tmp = opplan;
@@ -1610,6 +1610,9 @@ void OperationPlan::deleteOperationPlans(Operation* o,
     if (!del && tmp->getProposed()) {
       del = tmp->getOwner() ? tmp->getOwner()->getProposed() : true;
     }
+    if (del && !deleteDeliveries &&
+        (tmp->getOwner() ? tmp->getOwner()->getDemand() : tmp->getDemand()))
+      del = false;
     if (del) delete tmp;
   }
 }
@@ -2090,8 +2093,7 @@ void OperationPlan::setDemand(Demand* l) {
   }
 }
 
-PyObject* OperationPlan::create(PyTypeObject* , PyObject* ,
-                                PyObject* kwds) {
+PyObject* OperationPlan::create(PyTypeObject*, PyObject*, PyObject* kwds) {
   try {
     // Find or create the C++ object
     PythonDataValueDict atts(kwds);
@@ -2423,7 +2425,7 @@ void OperationPlan::clear() {
   for (auto& o : Operation::all()) o.deleteOperationPlans();
 }
 
-PyObject* OperationPlan::createIterator(PyObject* , PyObject* args) {
+PyObject* OperationPlan::createIterator(PyObject*, PyObject* args) {
   // Check arguments
   PyObject* pyoper = nullptr;
   if (!PyArg_ParseTuple(args, "|O:operationplans", &pyoper)) return nullptr;

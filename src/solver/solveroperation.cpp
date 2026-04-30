@@ -268,7 +268,7 @@ bool SolverCreate::checkOperation(OperationPlan* opplan,
     // Loop through all flowplans, if needed
     // @todo need some kind of coordination run here!!! see test
     // alternate_flow_1
-    if (getPropagate() && a_qty) {
+    if (data.getPropagate() && a_qty) {
       for (auto g = opplan->beginFlowPlans(); g != opplan->endFlowPlans();
            ++g) {
         if (g->getFlow()->isConsumer() && !g->isFollowingBatch() &&
@@ -572,7 +572,7 @@ void SolverCreate::solve(const Operation* oper, void* v) {
            << "' is asked: " << data->state->q_qty << "  "
            << data->state->q_date << '\n';
 
-  if (data->getSolver()->getBatchGrouping() &&
+  if (data->getBatchGrouping() &&
       (oper->getBatchWindow() > Duration(0L) ||
        data->state->q_date < Plan::instance().getCurrent()) &&
       data->state->curBuffer &&
@@ -1069,7 +1069,7 @@ void SolverCreate::solve(const OperationRouting* oper, void* v) {
     // Using the routing as the delivery operation of a demand
     flow_qty_per = 1.0;
 
-  if (data->getSolver()->getBatchGrouping() &&
+  if (data->getBatchGrouping() &&
       (oper->getBatchWindow() > Duration(0L) ||
        data->state->q_date < Plan::instance().getCurrent()) &&
       data->state->curBuffer) {
