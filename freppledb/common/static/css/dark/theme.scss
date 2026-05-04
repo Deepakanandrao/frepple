@@ -77,6 +77,11 @@ $dropdown-divider-bg: $gray-500;
 $min-contrast-ratio: 2.5;
 $input-group-addon-color: $body-color;
 $input-group-addon-bg: #515960;
+$link-opacity: 1;
+
+.form-control {
+  color-scheme: dark;
+}
 
 // You probably don't need to update the variables below this line.
 // These updates are normally generic for all frepple themes (with the exception of the dark theme)
