@@ -1141,7 +1141,8 @@ class OperatorForward : public Solver, public NonCopyable {
   OperatorForward(SolverCreate::SolverData* d, int c = -1,
                   CommandManager* mgr = nullptr)
       : cmds(mgr), data(d), cluster(c) {
-    // We'll never use this class from Python, but still need to do a dummy initialization.
+    // We'll never use this class from Python, but still need to do a dummy
+    // initialization.
     PyObject_INIT(this, &PyBaseObject_Type);
     if (d)
       setLogLevel(d->getLogLevel());
@@ -1198,6 +1199,8 @@ class OperatorForward : public Solver, public NonCopyable {
       op->setStart(d);
     else
       cmds->add(new CommandMoveOperationPlan(op, d, Date::infinitePast));
+    if (op->getDemand() || (op->getOwner() && op->getOwner()->getDemand()))
+      moved_deliveries = true;
   }
 
   /* Add a command to move the end date of the operationplan. */
@@ -1212,6 +1215,8 @@ class OperatorForward : public Solver, public NonCopyable {
     else
       cmds->add(new CommandMoveOperationPlan(op, Date::infinitePast, d, -1.0,
                                              false, true));
+    if (op->getDemand() || (op->getOwner() && op->getOwner()->getDemand()))
+      moved_deliveries = true;
   }
 
   void addResize(FlowPlan* flplan, double qty, bool) {
@@ -1221,6 +1226,10 @@ class OperatorForward : public Solver, public NonCopyable {
       logger << "Warning:can't undo this flowplan resize" << endl;  // TODO
       flplan->setQuantity(qty, true);
     }
+    auto* op = flplan->getOperationPlan();
+    if (op &&
+        (op->getDemand() || (op->getOwner() && op->getOwner()->getDemand())))
+      moved_deliveries = true;
   }
 
   /* Compare candidate operationplans. */
@@ -1234,6 +1243,10 @@ class OperatorForward : public Solver, public NonCopyable {
     compareLoadPlans(OperatorForward* d) : data(d) {}
     bool operator()(const LoadPlan*&, const LoadPlan*&);
   };
+
+  void clearMovedDeliveries() { moved_deliveries = false; }
+
+  bool getMovedDeliveries() const { return moved_deliveries; }
 
  private:
   CommandManager* cmds = nullptr;
@@ -1257,6 +1270,8 @@ class OperatorForward : public Solver, public NonCopyable {
   int cluster;
 
   direction excess_scanner = direction::both;
+
+  bool moved_deliveries = false;
 
   /* Add a operationplan to the tabu list. Operationplans in this list can't
    * be touched by the move solver.
