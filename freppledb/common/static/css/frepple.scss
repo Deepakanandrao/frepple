@@ -262,7 +262,10 @@ div.tt-menu.tt-open {
     @extend .dropdown-menu;
     max-height: 500px;
     overflow-y: auto;
-    scrollbar-width: thin;
+}
+
+.tt-menu,
+.list-group {
     scrollbar-color: $dark $dropdown-bg;
 }
 
@@ -992,4 +995,14 @@ input[type="date"] {
 // Default text color for svg
 svg text {
     fill: var(--bs-body-color);
+}
+
+.btn-text-outline {
+    --bs-btn-bg: transparent;
+    --bs-btn-color: var(--bs-body-color);
+    --bs-btn-border-color: var(--bs-border-color);
+    --bs-btn-hover-color: var(--bs-body-color);
+    --bs-btn-hover-bg: transparent;
+    --bs-btn-hover-border-color: var(--bs-body-color);
+    --bs-btn-active-bg: rgba(var(--bs-body-color-rgb), 0.1);
 }

@@ -860,15 +860,16 @@ var grid = {
       // Add selection of number of frozen columns
       row2 = '<div class="row mt-3"><div class="col">' +
         gettext("Frozen columns") +
-        '&nbsp;&nbsp;<select id="frozen" class="form-select w-auto d-inline">';
+        '&nbsp;&nbsp;<div class="dropup-center dropup d-inline">' +
+        '<button class="btn btn-sm btn-outline-secondary btn-text-outline dropdown-toggle" type="button" id="frozen" data-bs-toggle="dropdown" aria-expanded="false">' +
+        maxfrozen +
+        '</button>' +
+        '<ul class="dropdown-menu min-w-0" style="min-width: 0;" aria-labelledby="frozen">';
       var maxfreeze = Math.min(colModel.length, 5);
       for (var i = 0; i <= maxfreeze; i++) {
-        if (i == maxfrozen)
-          row2 += '<option selected value="' + i + '">' + i + '</option>';
-        else
-          row2 += '<option value="' + i + '">' + i + '</option>';
+        row2 += '<li><a class="dropdown-item" href="#" onclick=\'$("#frozen").text($(this).text()); event.preventDefault();\'>' + i + '</a></li>';
       }
-      row2 += '</select></div></div>';
+      row2 += '</ul></div></div></div>';
     }
 
     row0 = row0.replace('placeholder0', val0s);
@@ -1023,7 +1024,7 @@ var grid = {
               perm.push(parseInt(i));
         }
         else
-          numfrozen = parseInt($("#frozen").val());
+          numfrozen = parseInt($("#frozen").html());
         for (var i in hiddenrows)
           perm.push(hiddenrows[i]);
         for (var i in colModel)
@@ -2112,14 +2113,22 @@ var grid = {
       gettext("This form allows you update fields for many records.") +
       '</div></div>';
 
-    form += '<div class="row d-none mb-3" id="updatefieldtemplate">' +
-      '<div class="col">' +
-      '<select class="form-select">';
+    var templateFirstField = null;
     for (var field of colModel) {
       if (!field.editable) continue;
-      form += '<option value="' + field.name + '">' + field.label + '</option>'
+      if (!templateFirstField) templateFirstField = field;
     }
-    form += '</select></div>' +
+    form += '<div class="row d-none mb-3" id="updatefieldtemplate">' +
+      '<div class="col">' +
+      '<div class="dropdown">' +
+      '<button class="btn btn-outline-secondary btn-text-outline dropdown-toggle w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-value="' + (templateFirstField ? templateFirstField.name : '') + '">' +
+      (templateFirstField ? templateFirstField.label : '') + '</button>' +
+      '<ul class="dropdown-menu w-100">';
+    for (var field of colModel) {
+      if (!field.editable) continue;
+      form += '<li><a class="dropdown-item" href="#" data-value="' + field.name + '" onclick="var btn=$(this).closest(\'.dropdown\').find(\'.dropdown-toggle\');btn.text($(this).text()).attr(\'data-value\',$(this).attr(\'data-value\'));event.preventDefault();">' + field.label + '</a></li>';
+    }
+    form += '</ul></div></div>' +
       '<div class="col"><input class="form-control" type="text" placeholder="' + gettext("update to") + '"></div>' +
       '<div class="col-auto">' +
       '<button class="btn btn-sm btn-primary" onclick="grid.deleteUpdateField(event)">' +
@@ -2128,14 +2137,22 @@ var grid = {
       '</button>' +
       '</div></div>';
 
-    form += '<div class="row mb-3 updatefield">' +
-      '<div class="col">' +
-      '<select class="form-select">';
+    var firstField = null;
     for (var field of colModel) {
       if (!field.editable) continue;
-      form += '<option value="' + field.name + '">' + field.label + '</option>'
+      if (!firstField) firstField = field;
     }
-    form += '</select></div>' +
+    form += '<div class="row mb-3 updatefield">' +
+      '<div class="col">' +
+      '<div class="dropdown">' +
+      '<button class="btn btn-outline-secondary btn-text-outline dropdown-toggle w-100 text-start" type="button" data-bs-toggle="dropdown" aria-expanded="false" data-value="' + (firstField ? firstField.name : '') + '">' +
+      (firstField ? firstField.label : '') + '</button>' +
+      '<ul class="dropdown-menu w-100">';
+    for (var field of colModel) {
+      if (!field.editable) continue;
+      form += '<li><a class="dropdown-item" href="#" data-value="' + field.name + '" onclick="var btn=$(this).closest(\'.dropdown\').find(\'.dropdown-toggle\');btn.text($(this).text()).attr(\'data-value\',$(this).attr(\'data-value\'));event.preventDefault();">' + field.label + '</a></li>';
+    }
+    form += '</ul></div></div>' +
       '<div class="col"><input class="form-control" type="text" placeholder="' + gettext("update to") + '"></div>' +
       '<div class="col-auto">' +
       '<button class="btn btn-sm btn-primary" onclick="grid.deleteUpdateField(event)">' +
@@ -2178,7 +2195,7 @@ var grid = {
       'click',
       function () {
         for (var i of $("div.modal-body .updatefield")) {
-          var fld = $(i).find("select :selected").val();
+          var fld = $(i).find(".dropdown-toggle").attr("data-value");
           var val = $(i).find("input.form-control").val();
           msg["update"]["fields"][fld] = (val == "") ? null : val;
         }

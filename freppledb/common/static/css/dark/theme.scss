@@ -1,7 +1,7 @@
 $light: #272B30;
 $dark: #000000;
 
-$primary: #4a90e2;
+$primary: #3E99F5;
 $secondary: #515960;
 $success: #6AC76A;
 $info: #64C3E0;
@@ -45,25 +45,25 @@ $body-color: #e9ecef;
 
 // Grid breakpoints
 $grid-breakpoints: (
-    xs: 0,
-    sm: 576px,
-    md: 768px,
-    lg: 1050px,
-    // Increased from the default 992px to account for the wide navbar
-    xl: 1200px,
-    xxl: 1400px,
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 1050px,
+  // Increased from the default 992px to account for the wide navbar
+  xl: 1200px,
+  xxl: 1400px,
 );
 
 $theme-colors: (
-    "primary": $primary,
-    "secondary": $secondary,
-    "success": $success,
-    "info": $info,
-    "warning": $warning,
-    "danger": $danger,
-    "light": $light,
-    "dark": $dark,
-    "gray": $gray-600,
+  "primary": $primary,
+  "secondary": $secondary,
+  "success": $success,
+  "info": $info,
+  "warning": $warning,
+  "danger": $danger,
+  "light": $light,
+  "dark": $dark,
+  "gray": $gray-600,
 );
 
 // Specific for the dark theme
@@ -74,7 +74,9 @@ $input-border-color: #333;
 $nav-tabs-border-color: $light;
 $navbar-light-hover-color: $body-color;
 $dropdown-divider-bg: $gray-500;
-
+$min-contrast-ratio: 2.5;
+$input-group-addon-color: $body-color;
+$input-group-addon-bg: #515960;
 
 // You probably don't need to update the variables below this line.
 // These updates are normally generic for all frepple themes (with the exception of the dark theme)
@@ -88,7 +90,7 @@ $accordion-button-padding-y: 0.5rem;
 $breadcrumb-divider-color: $body-color;
 $breadcrumb-divider: "\00a0\00a0\F0DA\00a0\00a0";
 $breadcrumb-item-padding-x: 0.2rem;
-$btn-active-bg-shade-amount: 70%;
+//$btn-active-bg-shade-amount: 70%;
 $card-title-spacer-y: 0;
 $dropdown-color: $body-color;
 $dropdown-link-active-bg: #272B30;
