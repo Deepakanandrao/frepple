@@ -191,6 +191,7 @@ class MultiDBMiddleware:
         # Authentication through the header
         auth_header = request.META.get("HTTP_AUTHORIZATION", None)
         webtoken = request.GET.get("webtoken", None)
+        respect_scenario_preference = False
         if auth_header or webtoken:
             try:
                 if auth_header:
@@ -255,6 +256,7 @@ class MultiDBMiddleware:
                                     "No user or email in webtoken"
                                 )
                             allow_scenario_switch = True
+                            respect_scenario_preference = decoded.get("navbar", False)
                         except User.DoesNotExist:
                             if getattr(settings, "SOCIALACCOUNT_AUTO_SIGNUP", True):
                                 # Autocreate new user
@@ -334,7 +336,7 @@ class MultiDBMiddleware:
 
         # Set the database for queries only here.
         # All statements before this MUST be executed on the default database.
-        request.database = db
+        request.database = None if respect_scenario_preference else db
 
         # Keep last_login date up to date and start web service if needed.
         # The user object is ALWAYS on default database at this stage, and we save the last login
