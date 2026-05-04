@@ -31,6 +31,8 @@ You can already check out a `preview <https://demo-preview.frepple.com>`_.
 - | 18, 19: Fix for in-transit material in multi-step routes.
   | Between steps the material is seen as in-transit in  Odoo, but it wasn't seen in frepple.
 
+- | When navigating from odoo into frepple, we now redirect to a user's default scenario.
+
 .. rubric:: Upgrade compatibility heads-up
 
 | No breaking changes in this release.
