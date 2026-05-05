@@ -28,6 +28,16 @@ You can already check out a `preview <https://demo-preview.frepple.com>`_.
 
 .. rubric:: Odoo integration
 
+- | 17, 18, 19: You can now generate recommendations on planning actions without even installing
+    frepple. The odoo addon can now send the data to a frepple plan generation service in the
+    cloud.
+  | For relatively simple plans, which don't require the full power of an APS and its user
+    interface, this can be a very convenient way to improve the odoo planning process.
+  | In this launching phase, this service is free to use. We may make it a paid service
+    in the future.
+
+- | 18, 19: Improved mapping for components needed for subcontractor purchase orders.
+
 - | 18, 19: Fix for in-transit material in multi-step routes.
   | Between steps the material is seen as in-transit in  Odoo, but it wasn't seen in frepple.
 
