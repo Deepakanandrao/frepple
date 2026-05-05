@@ -108,9 +108,12 @@ from freppledb.common.models import (
     NotificationFactory,
 )
 from freppledb.common.dataload import parseExcelWorksheet, parseCSVdata
-from freppledb.common.localization import parseLocalizedDate, parseLocalizedDateTime
+from freppledb.common.localization import (
+    parseLocalizedDate,
+    parseLocalizedDateTime,
+    parseInterval,
+)
 from freppledb.common.utils import getStorageUsage, get_databases
-
 
 logger = logging.getLogger(__name__)
 
@@ -154,8 +157,7 @@ class IsChildOfLookup(Lookup):
         (select child.name from %s owner
         inner join %s child on child.lft between owner.lft and owner.rght
         where owner.name = %s)
-        """
-            % (lhs, objectModel, objectModel, rhs),
+        """ % (lhs, objectModel, objectModel, rhs),
             params,
         )
 
@@ -1689,14 +1691,11 @@ class GridReport(View):
             if maxstorage:
                 storageUsage = round(getStorageUsage() / 1024 / 1024)
                 if storageUsage > maxstorage:
-                    return HttpResponseForbidden(
-                        """
+                    return HttpResponseForbidden("""
                         Storage quota exceeded: %sMB used out of %sMB available.<br>
                         Please <a class="text-decoration-underline" href="%s/docs/current/doc/installation-guide/setting-disk-space-quotas.html" target="_blank">free some disk space</a>
                         and try again.
-                        """
-                        % (storageUsage, maxstorage, settings.DOCUMENTATION_URL)
-                    )
+                        """ % (storageUsage, maxstorage, settings.DOCUMENTATION_URL))
 
             # Note: the detection of the type of uploaded file depends on the
             # browser setting the right mime type of the file.
@@ -2983,6 +2982,8 @@ class GridReport(View):
             return models.Q(
                 **{"%s__exact" % reportrow.field_name: parseLocalizedDate(data)}
             )
+        elif isinstance(reportrow, GridFieldDuration):
+            return models.Q(**{"%s__exact" % reportrow.field_name: parseInterval(data)})
         else:
             return models.Q(
                 **{"%s__iexact" % reportrow.field_name: smart_str(data).strip()}
@@ -3011,6 +3012,8 @@ class GridReport(View):
             data = parseLocalizedDateTime(data)
         elif isinstance(reportrow, GridFieldDate):
             data = parseLocalizedDate(data)
+        elif isinstance(reportrow, GridFieldDuration):
+            data = parseInterval(data)
         return models.Q(**{"%s__gt" % reportrow.field_name: smart_str(data).strip()})
 
     @staticmethod
@@ -3019,6 +3022,8 @@ class GridReport(View):
             data = parseLocalizedDateTime(data)
         elif isinstance(reportrow, GridFieldDate):
             data = parseLocalizedDate(data)
+        elif isinstance(reportrow, GridFieldDuration):
+            data = parseInterval(data)
         return models.Q(**{"%s__gte" % reportrow.field_name: smart_str(data).strip()})
 
     @staticmethod
@@ -3027,6 +3032,8 @@ class GridReport(View):
             data = parseLocalizedDateTime(data)
         elif isinstance(reportrow, GridFieldDate):
             data = parseLocalizedDate(data)
+        elif isinstance(reportrow, GridFieldDuration):
+            data = parseInterval(data)
         return models.Q(**{"%s__lt" % reportrow.field_name: smart_str(data).strip()})
 
     @staticmethod
@@ -3035,6 +3042,9 @@ class GridReport(View):
             data = parseLocalizedDateTime(data)
         elif isinstance(reportrow, GridFieldDate):
             data = parseLocalizedDate(data)
+        elif isinstance(reportrow, GridFieldDuration):
+            data = parseInterval(data)
+            print(f"data={data}  smart_str(data).strip()={smart_str(data).strip()}")
         return models.Q(**{"%s__lte" % reportrow.field_name: smart_str(data).strip()})
 
     @staticmethod

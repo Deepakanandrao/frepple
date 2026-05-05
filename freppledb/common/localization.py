@@ -21,8 +21,9 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from itertools import chain
+import re
 
 from django.conf import settings
 from django.utils import encoding
@@ -61,3 +62,41 @@ def parseLocalizedDateTime(data):
             except (ValueError, TypeError):
                 continue
         raise Exception(_("Invalid date format"))
+
+
+def parseInterval(interval):
+    """
+    Converts "D HH:MM:SS" to total seconds.
+    """
+    # Case 1: Input is already a number, we assume we are talking seconds here
+    if isinstance(interval, (int, float)):
+        return timedelta(seconds=interval)
+
+    # Case 2 & 3: Input is a string
+    if isinstance(interval, str):
+        s = interval.strip()
+        # If the string is composed only of digits (or a float), treat it as seconds
+        if re.match(r"^\d+(\.\d+)?$", s):
+            return timedelta(seconds=float(s))
+
+        # Pattern to match: [[days] hours:]minutes:seconds
+        # This regex looks for: (Optional Days), (Optional Hours), Minutes, Seconds
+        pattern = (
+            r"^((?P<days>\d+)\s+)?((?P<hours>\d+):)?(?P<minutes>\d+):(?P<seconds>\d+)$"
+        )
+        match = re.match(pattern, s)
+
+        if not match:
+            raise Exception(_("Invalid time format"))
+
+        times = match.groupdict()
+
+        # Convert dictionary values to integers, defaulting to 0 if None
+        d = int(times["days"] or 0)
+        h = int(times["hours"] or 0)
+        m = int(times["minutes"] or 0)
+        s = int(times["seconds"] or 0)
+
+        return timedelta(seconds=d * 86400 + h * 3600 + m * 60 + s)
+
+    raise Exception(_("Input must be a string or a number."))
