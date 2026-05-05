@@ -174,6 +174,8 @@ function showGanttDrv($window, gettextCatalog, OperationPlan, PreferenceSvc) {
         else if (thedelay === 0)
           return '#008000';
         else if (thedelay > 0) {
+          if (isNaN(thenumber))
+            thenumber = Math.max(0, Math.min(100, 100 - thedelay));
           if (thenumber > 100 || thenumber < 0)
             return '#f00';
           else
