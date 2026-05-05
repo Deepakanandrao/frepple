@@ -40,10 +40,8 @@ $navbar-brand-height: 3rem;
 
 // Fonts
 $font-size-base: 0.8rem;
-$font-family-sans-serif:
-  "FontAwesome", "Open sans", Helvetica, Verdana, Arial, sans-serif;
-$font-family-monospace:
-  "FontAwesome", Menlo, Monaco, Consolas, "Courier New", monospace;
+$font-family-sans-serif: "FontAwesome", "Open sans", Helvetica, Verdana, Arial, sans-serif;
+$font-family-monospace: "FontAwesome", Menlo, Monaco, Consolas, "Courier New", monospace;
 $body-color: #333333;
 
 // Grid breakpoints
@@ -104,3 +102,4 @@ $nav-link-color: $body-color;
 $nav-tabs-border-color: $light;
 $nav-tabs-border-radius: 0;
 $spacer: 1rem;
+$jqgrid-header-bg: #e5e5e5;

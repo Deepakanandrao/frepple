@@ -24,14 +24,15 @@ $black: #000 !default;
 $body-bg: #272B30;
 
 // Table color
-$table-color: #e9ecef;
+$table-color: #e9ecef; // #272B30;
 $table-color-state: #e9ecef;
 
 // Override background colors
-$table-bg: inherit;
+$table-bg: #515960;
 $card-bg: #3A3F44;
 $dropdown-bg: #515960;
 $modal-content-bg: #3A3F44;
+$modal-footer-bg: #3A3F44;
 $list-group-bg: #3A3F44;
 
 // Logo height
@@ -78,8 +79,13 @@ $min-contrast-ratio: 2.5;
 $input-group-addon-color: $body-color;
 $input-group-addon-bg: #515960;
 $link-opacity: 1;
+$jqgrid-header-bg: $table-bg;
+$card-cap-bg: #515960;
+$card-cap-color: $body-color;
 
-.form-control {
+.form-control,
+input[type="checkbox"],
+input[type="radio"] {
   color-scheme: dark;
 }
 
